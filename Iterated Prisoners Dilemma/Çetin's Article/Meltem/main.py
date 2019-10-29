@@ -1,8 +1,12 @@
 from cooperator import Cooperator
 from defector import Defector
+from itertools import combinations 
 import random
+import sys
+import pandas as pd
 
-gameStatistics = []
+gameStatistics = {'mu':[], 'ro':[],'avg payoff of c':[],'avg payoff of d':[],'remainder':[] }
+
 playerList = []
 
 def play(Player1, Player2, R,P,S,T):
@@ -29,18 +33,20 @@ def decideToPlay(Player1, Player2):
   else:
     return True
 
-def GAME(N, M, D, P, R, S, T,repet):
+def GAME(N, M, D, P, R, S, T,ti):
   pOfC = 0
   pOfD = 0
   for i in range(D):
-    playerList.append(Defector(M))
+    playerList.append(Defector(1,M))
   for k in range(N-D):
-    playerList.append(Cooperator(M))
-  for ri in range(repet):
-    random.shuffle(playerList)
-    for j in range(0,len(playerList),2):
-      if(decideToPlay(playerList[j],playerList[j+1])):
-        play(playerList[j],playerList[j+1], R,P,S,T)
+    playerList.append(Cooperator(1,M))
+  for ri in range(ti):
+    comb = combinations(playerList, 2)
+    comb = list(comb)
+    random.shuffle(comb)
+    for pair in list(comb):
+      if(decideToPlay(pair[0],pair[1])):
+        play(pair[0],pair[1], R,P,S,T)
   for P in playerList:
     if P.type == "C":
       pOfC =+ P.score
@@ -48,17 +54,25 @@ def GAME(N, M, D, P, R, S, T,repet):
       pOfD =+ P.score
   pOfC = pOfC / (N-D)
   pOfD = pOfD / (D)
-  gameStatistics.append([(M/N), (D/N), pOfC, pOfD, (pOfC-pOfD)])
+  gameStatistics["mu"].append(round((M/N),3))
+  gameStatistics["ro"].append(round((D/N),3))
+  gameStatistics["avg payoff of c"].append(round(pOfC,3))
+  gameStatistics["avg payoff of d"].append(round(pOfD,3))
+  gameStatistics["remainder"].append(round((pOfC-pOfD),3))
 
 N = 100
-M = 50
-D=50
+#M = sys.argv[1]
+#D = sys.argv[2]
 R = 3
-S =0
-T=5
-P=1
-repet = 20
+S = 0
+T = 5
+P = 1
+ti = 2
+for M in range(1,101):
+  for D in range(1,101):
+    for i in range(20):
+      GAME(N, M, D, P, R, S, T,ti)
 
-GAME(N, M, D, P, R, S, T,repet)
-print(gameStatistics)
+gameStatistics =  pd.DataFrame.from_dict(gameStatistics)
+pd.DataFrame.to_csv("experiment.csv")
 

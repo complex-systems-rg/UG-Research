@@ -1,5 +1,5 @@
 class Player:
-  def __init__(self, type, M):
+  def __init__(self, type, defectlevel, M):
     self.type = type
     self.score = 0
     self.attention = M
@@ -16,6 +16,8 @@ class Player:
         if value == "C":
           self.memory.pop(key)
           self.memory[id(Played)] = Played.type
+          if(len(memory) == M):
+            memoryFull = True
           break
     
 
