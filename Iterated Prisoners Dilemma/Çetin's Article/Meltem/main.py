@@ -11,17 +11,17 @@ playerList = []
 
 def play(Player1, Player2, R,P,S,T):
   if Player1.type == "C" and Player2.type == "C":
-    Player1.score =+ R
-    Player2.score =+ R
+    Player1.score += R
+    Player2.score += R
   elif Player1.type == "C" and Player2.type == "D":
-    Player1.score =+ S
-    Player2.score =+ T
+    Player1.score += S
+    Player2.score += T
   elif Player1.type == "D" and Player2.type == "C":
-    Player1.score =+ T
-    Player2.score =+ S   
+    Player1.score += T
+    Player2.score += S   
   elif Player1.type == "D" and Player2.type == "D":
-    Player1.score =+ P
-    Player2.score =+ P
+    Player1.score += P
+    Player2.score += P
   Player1.save(Player2)
   Player2.save(Player1)
 
@@ -49,9 +49,9 @@ def GAME(N, M, D, P, R, S, T,ti):
         play(pair[0],pair[1], R,P,S,T)
   for P in playerList:
     if P.type == "C":
-      pOfC =+ P.score
+      pOfC += P.score
     else:
-      pOfD =+ P.score
+      pOfD += P.score
   pOfC = pOfC / (N-D)
   pOfD = pOfD / (D)
   gameStatistics["mu"].append(round((M/N),3))
@@ -68,10 +68,8 @@ S = 0
 T = 5
 P = 1
 ti = 2
-for M in range(1,101):
-  for D in range(1,101):
-    for i in range(20):
-      GAME(N, M, D, P, R, S, T,ti)
+for i in range(20):
+      GAME(N, 50, 50, P, R, S, T,ti)
 
 gameStatistics =  pd.DataFrame.from_dict(gameStatistics)
 pd.DataFrame.to_csv("experiment.csv")
