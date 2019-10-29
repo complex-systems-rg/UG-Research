@@ -60,6 +60,8 @@ def GAME(N, M, D, P, R, S, T,repet):
             pOfC = pOfC + P.score
         else:
             pOfD = pOfD + P.score
+
+
     if N-D != 0:
         pOfC = pOfC / (N-D)
     else:
