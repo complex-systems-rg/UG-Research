@@ -13,9 +13,9 @@ class Player:
     elif (self.memoryFull)==False:
       self.memory[id(Played)] = Played.type
       if(len(self.memory) == self.M):
-            memoryFull = True
+            self.memoryFull = True
     elif Played.type == "D": #and memory is full
-      for key, value in self.memory:
+      for key, value in self.memory.items():
         if value == "C":
           self.memory.pop(key)
           self.memory[id(Played)] = Played.type
