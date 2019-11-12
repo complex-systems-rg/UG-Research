@@ -4,8 +4,6 @@ import random
 import numpy as np
 from itertools import combinations
 
-gameStatistics = []
-
 def play(Player1, Player2, R,P,S,T):
     if Player1.type == "C" and Player2.type == "C":
         #print("CC")
@@ -39,8 +37,8 @@ def decideToPlay(Player1, Player2):
 
 def GAME(N, M, D, P, R, S, T,repet):
     playerList = []
-    pOfC = 0.0
-    pOfD = 0.0
+    pOfC = 0
+    pOfD = 0
     for i in range(D):
         playerList.append(Defector(M))
     for k in range(N-D):
@@ -71,7 +69,12 @@ def GAME(N, M, D, P, R, S, T,repet):
     else:
         pOfD = 0
 
-    gameStatistics.append([(M/N), (D/N), pOfC, pOfD, (pOfC-pOfD)])
+    game_stats.append([(M/N), (D/N), pOfC, pOfD, (pOfC-pOfD)])
+
+
+#### MAIN
+
+gameStatistics = []
 
 N = 100
 M = 50
@@ -80,20 +83,30 @@ R = 3
 S =0
 T=5
 P=1
-repet = 30
+repet = 2
 
-for x in range(0, 100, 10):
-    M = x
-    for i in range(5):
-        #This for loop creates multiple datasets for better quality of datas.
-        GAME(N, M, D, P, R, S, T,repet)
-    arr = np.array(gameStatistics)
-    mean_arr = np.mean(arr, axis=0)
-    print("For M = " + str(M))
-    print("M/N = " + str(round(mean_arr[0],3)))
-    print("D/N = " + str(round(mean_arr[1],3)))
-    print("pOfC = " + str(round(mean_arr[2],3)))
-    print("pOfD = " + str(round(mean_arr[3],3)))
-    print("pOfC-pOfD = " + str(round(mean_arr[4],3)))
+for x in range(10, 100, 10):
+    for y in range(10,100,10):
+        game_stats = []
+        M = x
+        D = y
+        for i in range(10):
+            #This for loop creates multiple datasets for better quality of datas.
+            GAME(N, M, D, P, R, S, T,repet)
+        temp = np.array(game_stats)
+        mean_arr = np.mean(temp, axis=0)
+        gameStatistics.append(mean_arr)
+
+
+    
+    
+arr = np.array(gameStatistics)
+np.savetxt("simulation.csv", arr, delimiter=",")
+#print("For M = " + str(M))
+#print("M/N = " + str(round(mean_arr[0],3)))
+#print("D/N = " + str(round(mean_arr[1],3)))
+#print("pOfC = " + str(round(mean_arr[2],3)))
+#print("pOfD = " + str(round(mean_arr[3],3)))
+#print("pOfC-pOfD = " + str(round(mean_arr[4],3)))
 #print(np.mean(arr, axis=0))  # Compute sum of each column; prints "[4 6]"
-    print("Cooperator's average performance: " + str(R*(N-D)*repet))
+#print("Cooperator's average performance: " + str(R*(N-D)*repet))
