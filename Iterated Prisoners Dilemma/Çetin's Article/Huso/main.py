@@ -4,7 +4,7 @@ import random
 import numpy as np
 from itertools import combinations
 
-def play(Player1, Player2, R,P,S,T):
+def play(Player1, Player2, R,P,S,T,forgetType):
     if Player1.type == "C" and Player2.type == "C":
         #print("CC")
         Player1.score += R
@@ -24,8 +24,8 @@ def play(Player1, Player2, R,P,S,T):
 
         Player1.score += P
         Player2.score += P
-    Player1.save(Player2)
-    Player2.save(Player1)
+    Player1.save(Player2,forgetType)
+    Player2.save(Player1,forgetType)
 
 def decideToPlay(Player1, Player2):
     if id(Player2) in Player1.memory.keys() and Player1.memory[id(Player2)]=="D":
@@ -35,7 +35,7 @@ def decideToPlay(Player1, Player2):
     else:
         return True
 
-def GAME(N, M, D, P, R, S, T,repet):
+def GAME(N, M, D, P, R, S, T,repet,forgetType):
     playerList = []
     pOfC = 0
     pOfD = 0
@@ -51,7 +51,7 @@ def GAME(N, M, D, P, R, S, T,repet):
         for match in comb:
             #if match[0].type=="C" and match[1].type=="D":
             if decideToPlay(match[0],match[1]):
-                play(match[0],match[1], R,P,S,T)
+                play(match[0],match[1], R,P,S,T,forgetType)
     
     for P in playerList:
         if P.type == "C":
@@ -76,6 +76,7 @@ def GAME(N, M, D, P, R, S, T,repet):
 
 gameStatistics = []
 
+forgetType = "coop"
 N = 100
 M = 50
 D= 80
@@ -85,14 +86,14 @@ T=5
 P=1
 repet = 2
 
-for x in range(10, 100, 10):
+for x in range(10,100,10):
     for y in range(10,100,10):
         game_stats = []
         M = x
         D = y
         for i in range(10):
             #This for loop creates multiple datasets for better quality of datas.
-            GAME(N, M, D, P, R, S, T,repet)
+            GAME(N, M, D, P, R, S, T,repet, forgetType)
         temp = np.array(game_stats)
         mean_arr = np.mean(temp, axis=0)
         gameStatistics.append(mean_arr)
@@ -102,11 +103,3 @@ for x in range(10, 100, 10):
     
 arr = np.array(gameStatistics)
 np.savetxt("simulation.csv", arr, delimiter=",")
-#print("For M = " + str(M))
-#print("M/N = " + str(round(mean_arr[0],3)))
-#print("D/N = " + str(round(mean_arr[1],3)))
-#print("pOfC = " + str(round(mean_arr[2],3)))
-#print("pOfD = " + str(round(mean_arr[3],3)))
-#print("pOfC-pOfD = " + str(round(mean_arr[4],3)))
-#print(np.mean(arr, axis=0))  # Compute sum of each column; prints "[4 6]"
-#print("Cooperator's average performance: " + str(R*(N-D)*repet))

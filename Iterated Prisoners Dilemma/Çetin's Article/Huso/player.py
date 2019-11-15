@@ -11,7 +11,7 @@ class Player:
         else:
             self.memoryFull = 1
 
-    def save(self, Played):
+    def save(self, Played, forgetType):
         if id(Played) in self.memory.keys():
             #print("Already played with the player " + str(id(Played)))
             return
@@ -24,17 +24,52 @@ class Player:
                 #print("Memory is full")
                 self.memoryFull=1
 
-        #Forgetting Mechanisms
-        #Memory is full, we need to add additional information.
         elif (self.memoryFull==1):
             if self.attention == 0:
                 #no save option for fishes.
                 return
-            
-            #random forgetting.
-            #print("Forgetting is started")
-            key = random.choice(list(self.memory.keys()))
-            self.memory.pop(key)
-            self.memory[id(Played)] = Played.type
-    
+        
+            random.shuffle(list(self.memory.keys()))
+            id_list = list(self.memory.keys())
+            if forgetType == "rand":
+                self.memory.pop(id_list[0])
+                self.memory[id(Played)] = Played.type
+
+            elif forgetType == "coop":
+                for idd in id_list:
+                    if self.memory[idd] == "C":
+                        self.memory.pop(idd)
+                        self.memory[id(Played)]=Played.type
+                        break
+
+            elif forgetType == "def":
+                for idd in id_list:
+                    if self.memory[idd] == "D":
+                        self.memory.pop(idd)
+                        self.memory[id(Played)]=Played.type
+                        break
+
+            elif forgetType == "maj":
+                if D > (N-D):
+                    maj = "D"
+                else:
+                    maj = "C"
+
+                for idd in id_list:
+                    if self.memory[idd] == maj:
+                        self.memory.pop(idd)
+                        self.memory[id(Played)]=Played.type
+                        break
+
+            elif forgetType == "eqpos":
+                eqpos = random.choice(["C","D"])
+                for idd in id_list:
+                    if self.memory[idd] == eqpos:
+                        self.memory.pop(idd)
+                        self.memory[id(Played)]=Played.type
+                        break
+
+
+
+
 
