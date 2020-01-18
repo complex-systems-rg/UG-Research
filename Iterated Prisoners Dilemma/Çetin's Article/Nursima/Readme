@@ -1,4 +1,3 @@
-Usage:
-g++ -std=c++11 main.cpp
-
-Code in progress... :d
+Execute like this:
+$ make
+$ ./a.out
